@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig"; // MongoDB connection
-import Movie from "@/models/movieModel";
+import Movies from "@/models/movieModel";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,7 +7,7 @@ connect();
 
 export const GET = async () => {
   try {
-    const movies = await Movie.find();
+    const movies = await Movies.find();
     return NextResponse.json({ success: true, movies }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -46,7 +46,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     // Save to database
-    const newMovie = new Movie({ title, publishingYear, poster });
+    const newMovie = new Movies({ title, publishingYear, poster });
     await newMovie.save();
 
     return NextResponse.json(

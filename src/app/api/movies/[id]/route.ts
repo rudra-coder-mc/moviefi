@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Movie from "@/models/movieModel";
+import Movies from "@/models/movieModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -11,7 +11,7 @@ export const GET = async (
 ) => {
   const { id } = params; // Extract movie ID from the URL
   try {
-    const movie = await Movie.findById(id);
+    const movie = await Movies.findById(id);
 
     if (!movie) {
       return NextResponse.json({ error: "Movie not found" }, { status: 404 });
@@ -60,7 +60,7 @@ export const PATCH = async (
     }
 
     // Update the movie
-    const updatedMovie = await Movie.findByIdAndUpdate(
+    const updatedMovie = await Movies.findByIdAndUpdate(
       id,
       { title, publishingYear, poster },
       { new: true } // Return the updated document
@@ -93,7 +93,7 @@ export const DELETE = async (
 ) => {
   const { id } = params; // Extract movie ID from the URL
   try {
-    const deletedMovie = await Movie.findByIdAndDelete(id);
+    const deletedMovie = await Movies.findByIdAndDelete(id);
 
     if (!deletedMovie) {
       return NextResponse.json({ error: "Movie not found" }, { status: 404 });
