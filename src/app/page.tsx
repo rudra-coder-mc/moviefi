@@ -143,6 +143,7 @@ export default function Home() {
               title={movie.title}
               year={movie.publishingYear}
               imageUrl={movie.poster}
+             
             />
           </Link>
         ))}

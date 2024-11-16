@@ -1,4 +1,3 @@
-"use client";
 import { initEdgeStore } from "@edgestore/server";
 import { createEdgeStoreNextHandler } from "@edgestore/server/adapters/next/app";
 const es = initEdgeStore.create();
