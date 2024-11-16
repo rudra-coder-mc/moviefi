@@ -4,13 +4,11 @@ import InputField from "@/components/InputField";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 export interface CustomErrorResponse {
-  error: string; 
-
+  error: string;
 }
 
 /**
@@ -28,7 +26,6 @@ const SignIn = () => {
 
   const router = useRouter();
 
-  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
   // Basic validation: ensure both email and password are filled
@@ -67,8 +64,8 @@ const SignIn = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/login", { email, password });
-   
+      await axios.post("/api/login", { email, password });
+
       toast.success("Login successful!");
       router.push("/");
     } catch (e) {
@@ -81,15 +78,6 @@ const SignIn = () => {
       setLoading(false);
     }
   };
-
-  // Check if both email and password are filled to enable the button
-  useEffect(() => {
-    if (email && password) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [email, password]);
 
   return (
     <div className="min-h-screen  flex items-center justify-center">
@@ -107,7 +95,7 @@ const SignIn = () => {
             onChange={(e) => setEmail(e.target.value)}
             width="sm:w-[300px] w-[380px]"
             height="h-[45px]"
-            bgColor="bg-inputColor" 
+            bgColor="bg-inputColor"
             className="focus:outline-none focus:ring-2 focus:ring-primary"
           />
 
@@ -143,8 +131,9 @@ const SignIn = () => {
             bgColor="bg-primary"
             hoverColor="hover:bg-green-600"
             className="focus:outline-none focus:ring-2 focus:ring-primary text-base font-bold leading-6 text-center"
+            disabled={loading}
           >
-            Login
+            {loading ? "Loading..." : "Sign in"}
           </Button>
         </form>
         <div className="flex justify-center">
@@ -153,7 +142,7 @@ const SignIn = () => {
             className="text-sm text-gray-200 hover:underline focus:outline-none focus:ring-2 focus:ring-primary"
             passHref
           >
-            <p>Don't have an account? Sign up</p>
+            <p>Don&apos;t have an account? Sign up</p>
           </Link>
         </div>
       </div>

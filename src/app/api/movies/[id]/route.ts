@@ -20,7 +20,7 @@ export const GET = async (
     return NextResponse.json({ success: true, movie }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch movie" },
+      { error: `Failed to fetch movie ${error}` },
       { status: 500 }
     );
   }
@@ -54,7 +54,7 @@ export const PATCH = async (
 
     if (poster && (typeof poster !== "string" || !poster.startsWith("http"))) {
       return NextResponse.json(
-        { error: "Poster must be a valid URL" },
+        { error: `Poster must be a valid URL ` },
         { status: 400 }
       );
     }
@@ -80,7 +80,7 @@ export const PATCH = async (
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to update movie" },
+      { error: `Failed to update movie ${error}` },
       { status: 500 }
     );
   }
@@ -105,7 +105,7 @@ export const DELETE = async (
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to delete movie" },
+      { error: `Failed to delete movie ${error}` },
       { status: 500 }
     );
   }

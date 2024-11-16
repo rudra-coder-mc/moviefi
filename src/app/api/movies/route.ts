@@ -1,5 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig"; // MongoDB connection
 import Movie from "@/models/movieModel";
+
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -10,7 +11,7 @@ export const GET = async () => {
     return NextResponse.json({ success: true, movies }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch movies" },
+      { error: `Failed to fetch movies ${error}` },
       { status: 500 }
     );
   }
@@ -54,7 +55,7 @@ export const POST = async (request: NextRequest) => {
     );
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to create movie" },
+      { error: `Failed to fetch movies ${error}` },
       { status: 500 }
     );
   }

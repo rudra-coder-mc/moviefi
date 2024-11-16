@@ -43,12 +43,12 @@ const SignUp: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/signup", {
+      await axios.post("/api/signup", {
         email,
         password,
         username,
       });
-   
+
       toast.success("Login successful!");
       router.push("/");
     } catch (e) {
@@ -126,8 +126,9 @@ const SignUp: React.FC = () => {
             bgColor="bg-primary"
             hoverColor="hover:bg-green-600"
             className="focus:outline-none focus:ring-2 focus:ring-primary text-base font-bold leading-6 text-center"
+            disabled={loading}
           >
-            Sign up
+            {loading ? "Signing up..." : "Sign up"}
           </Button>
         </form>
         <div className="flex justify-center">

@@ -5,7 +5,7 @@ import { SingleImageDropzone } from "@/components/SingleImageDropzone";
 import { useEdgeStore } from "@/lib/edgestore";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 /**
