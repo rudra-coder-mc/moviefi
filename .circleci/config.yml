@@ -7,52 +7,11 @@ jobs:
   build-node:
     # Build node project
     executor: node/default
-# This config was automatically generated from your source code
-# Stacks detected: deps:node:.
-version: 2.1
-orbs:
-  node: circleci/node@5
-jobs:
-  build-node:
-    # Build node project
-    executor: node/default
     environment:
       MONGO_URL=mongodb+srv://atulscriptjet:WQo4a13xT4PhwD8V@cluster0.mbhvm.mongodb.net/
-      TOKEN_SECRET='thisistempkey'
+      TOKEN_SECRET=thisistempkey
       EDGE_STORE_ACCESS_KEY=Xu9Y2eNK1V5FRKFud96NN87lZewkzTbN
       EDGE_STORE_SECRET_KEY=adXlfNiawx6ZOw1b1ImCdel4oGLbtlveJCrGdFMz09GHWCp4
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          command: npm run build
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
-      - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
-workflows:
-  build:
-    jobs:
-      - build-node
-    # - deploy:
-    #     requires:
-    #       - build-node
 
     steps:
       - checkout
@@ -78,7 +37,7 @@ workflows:
       # Replace this with steps to deploy to users
       - run:
           name: deploy
-          command: '#e.g. ./deploy.sh'
+          command: "#e.g. ./deploy.sh"
 workflows:
   build:
     jobs:
