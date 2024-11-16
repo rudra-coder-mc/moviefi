@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig"; // MongoDB connection
-import Movie from "@/models/movieModel"; // Movie model
+import Movie from "@/models/movieModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
