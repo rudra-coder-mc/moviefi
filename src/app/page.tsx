@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   return movies?.length > 0 ? (
-    <div className="min-h-screen max-w-[1440px] flex items-start justify-center p-[24px] sm:p-[60px] md:p-[120px]">
+    <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
         {/* My Movies Section */}
         <div className="col-span-12 flex items-center justify-between">
@@ -143,7 +143,6 @@ export default function Home() {
               title={movie.title}
               year={movie.publishingYear}
               imageUrl={movie.poster}
-             
             />
           </Link>
         ))}
