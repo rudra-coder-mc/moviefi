@@ -7,11 +7,10 @@ jobs:
   build-node:
     # Build node project
     executor: node/default
-    environment:
-      MONGO_URL=mongodb+srv://atulscriptjet:WQo4a13xT4PhwD8V@cluster0.mbhvm.mongodb.net/
-      TOKEN_SECRET=thisistempkey
-      EDGE_STORE_ACCESS_KEY=Xu9Y2eNK1V5FRKFud96NN87lZewkzTbN
-      EDGE_STORE_SECRET_KEY=adXlfNiawx6ZOw1b1ImCdel4oGLbtlveJCrGdFMz09GHWCp4
+    environment: $MONGO_URL
+      $TOKEN_SECRET
+      $EDGE_STORE_ACCESS_KEY
+      $EDGE_STORE_SECRET_KEY
 
     steps:
       - checkout
