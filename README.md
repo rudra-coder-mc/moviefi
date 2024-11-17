@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Sure! Here's the updated README documentation for your Next.js project, MovieFi, including additional details on deploying to AWS and using CircleCI for CI/CD:
 
-## Getting Started
+---
 
-First, run the development server:
+# MovieFi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+MovieFi is a full-stack Next.js application that allows users to manage their movie collection. The application includes features like login, signup, displaying all movies, adding new movies, and editing existing movies. This project uses CircleCI for continuous integration and deployment (CI/CD).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Table of Contents
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Features](#features)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Deployment](#deployment)
+- [CI/CD with CircleCI](#cicd-with-circleci)
+- [Contributing](#contributing)
+- [License](#license)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **Login**: User authentication through a login page.
+- **Signup**: New user registration through a signup page.
+- **Movie Listing**: Display all movies with their title, publishing year, and poster in a card format on the homepage.
+- **Add Movie**: Add new movies to the collection through an add movie page.
+- **Edit Movie**: Edit existing movie details through an edit movie page.
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clone the repository:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   git clone https://github.com/yourusername/moviefi.git
+   cd moviefi
+   ```
 
-## Deploy on Vercel
+2. Install dependencies:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment Variables
+
+Create a `.env` file in the root directory and add the following environment variables:
+
+    ```plaintext
+    MONGO_URL=your_mongo_url
+    TOKEN_SECRET=your_token_secret
+    EDGE_STORE_ACCESS_KEY=your_edge_store_access_key
+    EDGE_STORE_SECRET_KEY=your_edge_store_secret_key
+    ```
+
+## Usage
+
+Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application in action.
+
+## Deployment
+
+### Deploying to AWS EC2
+
+1. **Prepare Your EC2 Instance**:
+
+   - Create an EC2 instance and make sure it is set up and accessible via SSH.
+   - Install Node.js using `nvm` (Node Version Manager):
+
+     ```bash
+     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+     nvm install node
+     ```
+
+   - Install `nginx` for reverse proxy:
+
+     ```bash
+     sudo apt update
+     sudo apt install nginx
+     ```
+
+   - Install `pm2` for process management:
+
+     ```bash
+     npm install -g pm2
+     ```
+
+   - Create a directory for your project and clone the repository:
+     ```bash
+     mkdir /path/to/your/project
+     cd /path/to/your/project
+     git clone https://github.com/yourusername/moviefi.git .
+     ```
+
+2. **Deploy Your Application**:
+   - Use the following CircleCI configuration to automate the deployment process.
+
+### CI/CD with CircleCI
+
+Create a `.circleci/config.yml` file in the root of your project with the following content:
+
+    ```yaml
+    version: 2.1
+
+    orbs:
+      node: circleci/node@5
+
+    executors:
+      node-executor:
+        docker:
+          - image: circleci/node:latest
+
+    jobs:
+      build-node:
+        executor: node/default
+        environment:
+          MONGO_URL: $MONGO_URL
+          TOKEN_SECRET: $TOKEN_SECRET
+          EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
+          EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
+
+        steps:
+          - checkout
+          - node/install-packages:
+              pkg-manager: npm
+          - run:
+              command: npm run build
+          # - run:
+          #     command: npm test
+
+      deploy:
+        executor: node-executor
+        steps:
+          - checkout
+          - add_ssh_keys:
+              fingerprints:
+                - "SHA256:dYXfn3ckS9d+Xu1bigRggd39erp+aiddhQPKuMBXtoA"
+          - run:
+              name: Deploy to EC2
+              command: |
+                ssh -o StrictHostKeyChecking=no ubuntu@ec2-52-204-181-195.compute-1.amazonaws.com "cd /path/to/your/project && git pull origin main && npm install && npm run build && pm2 restart all"
+          - run: echo "Deployment complete!"
+
+    workflows:
+      version: 2
+      build_and_deploy:
+        jobs:
+          - build-node
+          - deploy:
+              requires:
+                - build-node
+    ```
+
+## Contributing
+
+If you would like to contribute to MovieFi, please fork the repository and create a pull request. We welcome all improvements and suggestions!
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

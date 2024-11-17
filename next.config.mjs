@@ -6,7 +6,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "files.edgestore.dev",
-        pathname: "/qgadk28u277dk238/**",
       },
     ],
   },
