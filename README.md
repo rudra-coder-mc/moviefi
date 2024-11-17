@@ -1,7 +1,3 @@
-Sure! Here's the updated README documentation for your Next.js project, MovieFi, including additional details on deploying to AWS and using CircleCI for CI/CD:
-
----
-
 # MovieFi
 
 MovieFi is a full-stack Next.js application that allows users to manage their movie collection. The application includes features like login, signup, displaying all movies, adding new movies, and editing existing movies. This project uses CircleCI for continuous integration and deployment (CI/CD).
@@ -14,8 +10,6 @@ MovieFi is a full-stack Next.js application that allows users to manage their mo
 - [Usage](#usage)
 - [Deployment](#deployment)
 - [CI/CD with CircleCI](#cicd-with-circleci)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -153,11 +147,3 @@ Create a `.circleci/config.yml` file in the root of your project with the follow
               requires:
                 - build-node
     ```
-
-## Contributing
-
-If you would like to contribute to MovieFi, please fork the repository and create a pull request. We welcome all improvements and suggestions!
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Deploy to EC2
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-52-204-181-195.compute-1.amazonaws.com "cd /path/to/your/project && git pull origin main && npm install && npm run build && pm2 restart all"
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-52-204-181-195.compute-1.amazonaws.com "cd /home/ubuntu/moviefi && git pull origin main && npm install && npm run build && pm2 restart all"
       - run: echo "Deployment complete!"
 
 workflows:
