@@ -80,9 +80,9 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center">
-      <div className="w-full sm:max-w-[300px] sm:h-[360px] max-w-[380px] h-[336px]  space-y-6 ">
-        <h1 className="text-white text-[64px] font-[600] leading-[80px] text-center underline-from-font decoration-skip-ink-none">
+    <div className="min-h-[calc(100vh-111px)] flex items-center justify-center  w-[380px] h-[336px] sm:w-[300px] sm:h-[360px] mx-[24px]">
+      <div className="w-full space-y-6 ">
+        <h1 className="text-white text-[48px] sm:text-[64px] font-[600] leading-[56px] sm:leading-[80px] text-center underline-from-font decoration-skip-ink-none">
           Sign in
         </h1>
 
@@ -93,7 +93,7 @@ const SignIn = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            width="sm:w-[300px] w-[380px]"
+            width="w-full"
             height="h-[45px]"
             bgColor="bg-inputColor"
             className="focus:outline-none focus:ring-2 focus:ring-primary"
@@ -105,7 +105,7 @@ const SignIn = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            width="sm:w-[300px] w-[380px]"
+            width="w-full"
             height="h-[45px]"
             bgColor="bg-inputColor"
             className="focus:outline-none focus:ring-2 focus:ring-primary"
@@ -126,7 +126,7 @@ const SignIn = () => {
 
           <Button
             type="submit"
-            width="sm:w-[300px] w-[380px]"
+            width="w-full"
             height="h-[54px]"
             bgColor="bg-primary"
             hoverColor="hover:bg-green-600"

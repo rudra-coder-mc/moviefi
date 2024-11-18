@@ -73,30 +73,31 @@ export default function AddMovie() {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col items-start justify-center p-[24px] sm:p-[120px] gap-[120px]">
-      <div className="w-full text-white text-[48px] font-[600] leading-[56px] ">
+    <div className="min-h-[calc(100vh-111px)] flex flex-col items-start justify-center m-[24px] sm:m-[120px] gap-[80px] sm:gap-[120px] w-[380px] max-w-[380px] sm:w-full sm:max-w-full ">
+      <div className="w-full sm:w-auto text-white text-[32px] sm:text-[48px] font-[600] leading-[56px] ">
         Create a new movie
       </div>
-      <div className="flex items-start justify-between gap-[127px]">
-        <div>
+      <div className="w-full flex items-start justify-between gap-[127px]">
+        <div className="sm:block hidden ">
           <SingleImageDropzone
             width={473}
             height={504}
+            className="w-[473px] h-[504px]"
             value={file}
             onChange={(file) => {
               setFile(file);
             }}
           />
         </div>
-        <div className="flex flex-col items-start justify-center gap-[64px] ">
-          <div className="flex flex-col items-start justify-center gap-[25px] ">
+        <div className="flex flex-col items-start justify-center sm:gap-[64px] w-full ">
+          <div className="flex flex-col items-start justify-center gap-[25px] mb-[24px] w-full sm:w-auto">
             <InputField
               id="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title"
-              width="w-[362px]"
+              width="w-full  sm:w-[362px] "
               height="h-[45px]"
               bgColor="bg-inputColor"
               className="focus:outline-none focus:ring-2 focus:ring-primary"
@@ -107,15 +108,28 @@ export default function AddMovie() {
               value={Pyear}
               onChange={(e) => setPyear(e.target.value)}
               placeholder="Publishing year"
-              width="w-[216px]"
+              width="w-full  sm:w-[216px] ]"
               height="h-[45px]"
               bgColor="bg-inputColor"
               className="focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div className="flex items-center justify-center gap-[16px]">
+          <div className="sm:hidden block mb-[40px] sh:mb-0 w-full">
+            <SingleImageDropzone
+              // width={380}
+              // height={372}
+              width={0}
+              height={0}
+              className="w-full h-[372px] "
+              value={file}
+              onChange={(file) => {
+                setFile(file);
+              }}
+            />
+          </div>
+          <div className="flex items-center justify-start gap-[16px] w-full ">
             <Button
-              width="w-[167px]"
+              width="w-full sm:w-[167px] "
               height="h-[56px]"
               type="button"
               className="text-white font-[700] text-[16px] border"
@@ -125,7 +139,7 @@ export default function AddMovie() {
             </Button>
 
             <Button
-              width="w-[167px]"
+              width="w-full sm:w-[167px] "
               height="h-[56px]"
               type="button"
               bgColor="bg-primary"

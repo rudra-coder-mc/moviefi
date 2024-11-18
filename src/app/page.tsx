@@ -95,10 +95,10 @@ export default function Home() {
   }
 
   return movies?.length > 0 ? (
-    <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
+    <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
         {/* My Movies Section */}
-        <div className="col-span-12 flex items-center justify-between">
+        <div className="col-span-12 flex items-center justify-between mb-[80px]">
           <div
             className=" flex items-center gap-[12px] sm:gap-4 cursor-pointer"
             onClick={onAdd}
@@ -111,8 +111,8 @@ export default function Home() {
               alt="Add Movie"
               className="w-[24px] h-[24px] sm:w-[32px] sm:h-[32px] object-contain"
               layout="intrinsic"
-              width={32}
-              height={32}
+              width={24}
+              height={24}
             />
           </div>
 
@@ -125,27 +125,28 @@ export default function Home() {
             <Image
               src="/logout.svg"
               alt="Logout"
-              className="w-[32px] h-[32px] object-contain"
+              className=" object-contain"
               layout="intrinsic"
-              width={32}
-              height={32}
+              width={24}
+              height={24}
             />
           </div>
         </div>
-
-        {movies?.map((movie) => (
-          <Link
-            key={movie._id}
-            href={`/edit/${movie._id}`}
-            className="col-span-6 sm:col-span-4 md:col-span-3  p-4 cursor-pointer"
-          >
-            <MovieCard
-              title={movie.title}
-              year={movie.publishingYear}
-              imageUrl={movie.poster}
-            />
-          </Link>
-        ))}
+        <div className="flex col-span-12 justify-center items-center flex-wrap gap-4 w-full">
+          {movies?.map((movie) => (
+            <Link
+              key={movie._id}
+              href={`/edit/${movie._id}`}
+              className=" cursor-pointer"
+            >
+              <MovieCard
+                title={movie.title}
+                year={movie.publishingYear}
+                imageUrl={movie.poster}
+              />
+            </Link>
+          ))}
+        </div>
 
         {/* Full Width Section */}
         {page && (

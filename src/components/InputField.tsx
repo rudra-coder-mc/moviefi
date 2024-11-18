@@ -29,7 +29,7 @@ const InputField: React.FC<InputFieldProps> = ({
   className,
 }) => {
   return (
-    <div>
+    <div className="w-full sm:w-auto">
       <label htmlFor={id} className="sr-only">
         {placeholder}
       </label>

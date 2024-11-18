@@ -126,10 +126,10 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
         <div
           {...getRootProps({
             className: dropZoneClassName,
-            style: {
-              width,
-              height,
-            },
+            // style: {
+            //   width,
+            //   height,
+            // },
           })}
         >
           {/* Main File Input */}

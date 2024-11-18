@@ -26,16 +26,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} antialiased bg-background`}>
         <Toaster position="top-center" reverseOrder={false} />
-        <div className="justify-center items-center flex min-h-screen">
+        <div className="justify-center items-center flex">
           <EdgeStoreProvider>{children}</EdgeStoreProvider>
         </div>
         {/* Add fixed positioning for the SVGs */}
-        <div className="fixed bottom-0 left-0 w-full">
+        <div className=" w-full ">
           <div className="relative w-full h-[111px]">
             <Image
               src="/Vector.svg"
               alt="First SVG"
-              className="absolute bottom-0 left-0 w-full h-[111px] object-contain"
+              className="absolute bottom-0 left-0 w-full object-contain"
               layout="intrinsic"
               width={500}
               height={500}
@@ -43,7 +43,7 @@ export default function RootLayout({
             <Image
               src="/Vector2.svg"
               alt="Second SVG"
-              className="absolute bottom-0 left-0 w-full h-[111px] object-contain"
+              className="absolute bottom-0 left-0 w-full  object-contain"
               layout="intrinsic"
               width={500}
               height={500}
