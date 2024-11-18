@@ -116,13 +116,13 @@ export default function Home() {
     }
   };
 
-  return loading || !movies ? (
+  return loading && !movies ? (
     <div className="flex items-center justify-center h-screen">
       <p className="text-lg font-medium text-gray-600 animate-pulse">
         Loading...
       </p>
     </div>
-  ) : movies?.length > 0 ? (
+  ) : movies && movies?.length > 0 ? (
     <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
         {/* Header */}
@@ -180,7 +180,7 @@ export default function Home() {
         {isSmallDevice && (
           <div
             ref={infiniteScrollRef}
-            className="col-span-12 flex justify-center items-center my-4"
+            className="col-span-12 flex justify-center items-center my-4 text-white"
           >
             {loading && <p>Loading more movies...</p>}
           </div>
