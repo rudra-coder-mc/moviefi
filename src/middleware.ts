@@ -1,17 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // Your middleware logic (e.g., authentication check or other checks)
   const token = req.cookies.get("token")?.value;
+  const currentPath = req.nextUrl.pathname;
 
-  if (!token) {
-    // Redirect to login if there's no token
+  const protectedRoutes = ["/add", "/edit/:id", "/"];
+  const authRoutes = ["/login", "/signup"];
+
+  // If authenticated and accessing auth routes, redirect to the home page
+  if (token && authRoutes.includes(currentPath)) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // If unauthenticated and accessing protected routes, redirect to login
+  if (!token && protectedRoutes.includes(currentPath)) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  return NextResponse.next(); // Continue if token exists
+  // Allow other requests to proceed
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/add", "/edit/:id", "/"],
+  matcher: ["/add", "/edit/:id", "/", "/login", "/signup"],
 };

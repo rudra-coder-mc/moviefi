@@ -1,11 +1,12 @@
 "use client";
 import Button from "@/components/Button";
 import MovieCard from "@/components/MovieCard";
+import { useResponsive } from "@/hooks";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 interface Movie {
@@ -15,41 +16,47 @@ interface Movie {
   poster: string;
 }
 
-/**
- * Home component that displays a list of movies and provides functionalities
- * to add a new movie, edit existing movies, and log out.
- *
- * The component fetches movies from the server on mount and displays them
- * in a grid layout. Users can navigate to the add movie page, edit existing
- * movies, or log out using the provided actions.
- *
- * If there are no movies to display, a message is shown with an option to
- * add a new movie.
- *
- * @returns {JSX.Element} The Home component UI.
- */
+interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  totalMovies: number;
+}
+
 export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const page = false;
+  const [pagination, setPagination] = useState<Pagination>({
+    currentPage: 1,
+    totalPages: 1,
+    totalMovies: 0,
+  });
+  const [limit, setLimit] = useState<number>(8);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const router = useRouter();
+  const infiniteScrollRef = useRef<HTMLDivElement | null>(null);
+  const { isSmallDevice } = useResponsive();
+  console.log(isSmallDevice);
 
-  /**
-   * Fetch movies from the server.
-   *
-   * This function sends a GET request to the server to fetch the list of
-   * movies. It sets the movies state to the received list of movies.
-   *
-   * If the request fails, it logs the error to the console.
-   *
-   * Finally, it sets the loading state to false.
-   */
-  const fetchMovies = async () => {
+  const fetchMovies = async (page: number = 1, append: boolean = false) => {
     setLoading(true);
     try {
-      const response = await axios.get("/api/movies");
-      setMovies(response.data.movies);
+      const response = await axios.get("/api/movies", {
+        params: { page, limit },
+      });
+      const fetchedMovies = response.data.movies;
+
+      setMovies((prevMovies) =>
+        append ? [...prevMovies, ...fetchedMovies] : fetchedMovies
+      );
+
+      setPagination({
+        currentPage: response.data.pagination.currentPage,
+        totalPages: response.data.pagination.totalPages,
+        totalMovies: response.data.pagination.totalMovies,
+      });
+
+      setHasMore(page < response.data.pagination.totalPages);
     } catch (error) {
       console.error("Failed to fetch movies:", error);
     } finally {
@@ -57,27 +64,22 @@ export default function Home() {
     }
   };
 
-  /**
-   * Navigate to the add movie page.
-   *
-   * @returns {void}
-   */
+  const loadMoreMovies = () => {
+    if (hasMore && !loading) {
+      fetchMovies(pagination.currentPage + 1, true);
+    }
+  };
+
   const onAdd = () => {
     router.push("/add");
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= pagination.totalPages) {
+      fetchMovies(page);
+    }
+  };
 
-  /**
-   * Logs the user out by calling the `/api/logout` endpoint.
-   *
-   * If the logout is successful, a success message is displayed and the user is
-   * redirected to the login page. If the logout fails, an error message is shown.
-   *
-   * @returns {Promise<void>} A promise that resolves when the logout process is complete.
-   */
   const logout = async () => {
     try {
       await axios.get("/api/logout");
@@ -90,17 +92,46 @@ export default function Home() {
     }
   };
 
-  if (loading) {
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    if (isSmallDevice) {
+      console.log(hasMore);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            loadMoreMovies();
+          }
+        },
+        { threshold: 1 }
+      );
+
+      if (infiniteScrollRef.current) {
+        observer.observe(infiniteScrollRef.current);
+      }
+
+      return () => {
+        if (infiniteScrollRef.current) {
+          observer.unobserve(infiniteScrollRef.current);
+        }
+      };
+    }
+  }, [isSmallDevice, infiniteScrollRef, pagination.currentPage, hasMore]);
+
+  if (loading && movies.length === 0) {
     return <p>Loading...</p>;
   }
 
   return movies?.length > 0 ? (
     <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
-        {/* My Movies Section */}
+        {/* Header */}
         <div className="col-span-12 flex items-center justify-between mb-[80px]">
           <div
-            className=" flex items-center gap-[12px] sm:gap-4 cursor-pointer"
+            className="flex items-center gap-[12px] sm:gap-4 cursor-pointer"
             onClick={onAdd}
           >
             <h2 className="text-white text-[32px] sm:text-[48px] font-[600] leading-[40px] sm:leading-[56px]">
@@ -115,29 +146,29 @@ export default function Home() {
               height={24}
             />
           </div>
-
-          {/* Logout Section */}
           <div
-            className=" flex items-center gap-4 justify-end cursor-pointer"
+            className="flex items-center gap-4 justify-end cursor-pointer"
             onClick={logout}
           >
             <p className="text-white text-[16px] hidden sm:block">Logout</p>
             <Image
               src="/logout.svg"
               alt="Logout"
-              className=" object-contain"
+              className="object-contain"
               layout="intrinsic"
               width={24}
               height={24}
             />
           </div>
         </div>
+
+        {/* Movie List */}
         <div className="flex col-span-12 justify-center items-center flex-wrap gap-4 w-full">
           {movies?.map((movie) => (
             <Link
               key={movie._id}
               href={`/edit/${movie._id}`}
-              className=" cursor-pointer"
+              className="cursor-pointer"
             >
               <MovieCard
                 title={movie.title}
@@ -148,12 +179,48 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Full Width Section */}
-        {page && (
-          <div className="col-span-12 border p-4">
-            <div>Prev</div>
-            <div>Numner</div>
-            <div>Next</div>
+        {/* Infinite Scroll Ref for Small Devices */}
+        {isSmallDevice && (
+          <div
+            ref={infiniteScrollRef}
+            className="col-span-12 flex justify-center items-center my-4"
+          >
+            {loading && <p>Loading more movies...</p>}
+          </div>
+        )}
+
+        {/* Pagination for Larger Devices */}
+        {!isSmallDevice && (
+          <div className="col-span-12 flex items-center justify-center gap-[15px] text-white text-[16px] font-[700] m-4">
+            <button
+              onClick={() => goToPage(pagination.currentPage - 1)}
+              disabled={pagination.currentPage === 1}
+              className="cursor-pointer"
+            >
+              Prev
+            </button>
+            <div className="flex items-center justify-center gap-[9px]">
+              {Array.from({ length: pagination.totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => goToPage(index + 1)}
+                  className={`px-3 py-1 rounded-md ${
+                    pagination.currentPage === index + 1
+                      ? "bg-primary"
+                      : "bg-cardColor"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => goToPage(pagination.currentPage + 1)}
+              disabled={pagination.currentPage === pagination.totalPages}
+              className="cursor-pointer"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
@@ -169,7 +236,7 @@ export default function Home() {
           width="w-[380px] sm:w-[202px]"
           height="h-[56px] sm:h-[56px]"
           bgColor="bg-primary"
-          className="font-[700] text-white text-[16px] py-[16px] px-[28px]  "
+          className="font-[700] text-white text-[16px] py-[16px] px-[28px]"
           onClick={onAdd}
         >
           Add a new movie

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { Toaster } from "react-hot-toast";
 
+
 // Import Montserrat from Google Fonts
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -31,7 +32,25 @@ export default function RootLayout({
         </div>
         {/* Add fixed positioning for the SVGs */}
         <div className=" w-full ">
-          <div className="relative w-full h-[111px]">
+          <div className="relative w-full h-[111px] block sm:hidden">
+            <Image
+              src="/mobildSvg.svg"
+              alt="First SVG"
+              className="absolute bottom-0 left-0 w-full object-contain"
+              layout="intrinsic"
+              width={500}
+              height={500}
+            />
+            <Image
+              src="/mobildSvg2.svg"
+              alt="Second SVG"
+              className="absolute bottom-0 left-0 w-full  object-contain"
+              layout="intrinsic"
+              width={500}
+              height={500}
+            />
+          </div>
+          <div className="relative w-full h-[111px] hidden sm:block">
             <Image
               src="/Vector.svg"
               alt="First SVG"

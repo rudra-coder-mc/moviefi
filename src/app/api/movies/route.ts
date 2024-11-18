@@ -5,13 +5,51 @@ import { NextRequest, NextResponse } from "next/server";
 
 connect();
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
   try {
-    const movies = await Movies.find();
-    return NextResponse.json({ success: true, movies }, { status: 200 });
+    // Get pagination parameters from query string using .get() method
+    const page = request.nextUrl.searchParams.get("page") || "1";
+    const limit = request.nextUrl.searchParams.get("limit") || "8";
+
+    // Convert to numbers
+    const pageNumber = parseInt(page as string, 10);
+    const limitNumber = parseInt(limit as string, 10);
+
+    // Validate pagination parameters
+    if (pageNumber < 1 || limitNumber < 1) {
+      return NextResponse.json(
+        { error: "Page and limit must be greater than 0" },
+        { status: 400 }
+      );
+    }
+
+    // Calculate the number of documents to skip for pagination
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Fetch the paginated data from the database
+    const movies = await Movies.find().skip(skip).limit(limitNumber);
+
+    // Count the total number of movies for pagination info
+    const totalMovies = await Movies.countDocuments();
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalMovies / limitNumber);
+
+    return NextResponse.json(
+      {
+        success: true,
+        movies,
+        pagination: {
+          currentPage: pageNumber,
+          totalPages,
+          totalMovies,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
-      { error: `Failed to fetch movies ${error}` },
+      { error: `Failed to fetch movies: ${error}` },
       { status: 500 }
     );
   }
