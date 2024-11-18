@@ -1,13 +1,13 @@
 "use client";
+import { useState, useEffect, useRef } from "react";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/Button";
 import MovieCard from "@/components/MovieCard";
 import { useResponsive } from "@/hooks";
-import axios, { AxiosError } from "axios";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 
 interface Movie {
   _id: string;
@@ -23,7 +23,7 @@ interface Pagination {
 }
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState<Pagination>({
     currentPage: 1,
@@ -36,7 +36,6 @@ export default function Home() {
   const router = useRouter();
   const infiniteScrollRef = useRef<HTMLDivElement | null>(null);
   const { isSmallDevice } = useResponsive();
-  console.log(isSmallDevice);
 
   const fetchMovies = async (page: number = 1, append: boolean = false) => {
     setLoading(true);
@@ -47,7 +46,7 @@ export default function Home() {
       const fetchedMovies = response.data.movies;
 
       setMovies((prevMovies) =>
-        append ? [...prevMovies, ...fetchedMovies] : fetchedMovies
+        append ? [...(prevMovies || []), ...fetchedMovies] : fetchedMovies
       );
 
       setPagination({
@@ -69,6 +68,31 @@ export default function Home() {
       fetchMovies(pagination.currentPage + 1, true);
     }
   };
+
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && isSmallDevice && hasMore && !loading) {
+          loadMoreMovies();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (infiniteScrollRef.current) {
+      observer.observe(infiniteScrollRef.current);
+    }
+
+    return () => {
+      if (infiniteScrollRef.current) {
+        observer.unobserve(infiniteScrollRef.current);
+      }
+    };
+  }, [isSmallDevice, hasMore, loading]);
 
   const onAdd = () => {
     router.push("/add");
@@ -92,40 +116,13 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
-
-  useEffect(() => {
-    if (isSmallDevice) {
-      console.log(hasMore);
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            loadMoreMovies();
-          }
-        },
-        { threshold: 1 }
-      );
-
-      if (infiniteScrollRef.current) {
-        observer.observe(infiniteScrollRef.current);
-      }
-
-      return () => {
-        if (infiniteScrollRef.current) {
-          observer.unobserve(infiniteScrollRef.current);
-        }
-      };
-    }
-  }, [isSmallDevice, infiniteScrollRef, pagination.currentPage, hasMore]);
-
-  if (loading && movies.length === 0) {
-    return <p>Loading...</p>;
-  }
-
-  return movies?.length > 0 ? (
+  return loading || !movies ? (
+    <div className="flex items-center justify-center h-screen">
+      <p className="text-lg font-medium text-gray-600 animate-pulse">
+        Loading...
+      </p>
+    </div>
+  ) : movies?.length > 0 ? (
     <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
         {/* Header */}
