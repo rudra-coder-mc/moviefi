@@ -30,7 +30,7 @@ export default function Home() {
     totalPages: 1,
     totalMovies: 0,
   });
-  const [limit, setLimit] = useState<number>(8);
+  const limit = 8;
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const router = useRouter();
