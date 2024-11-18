@@ -123,7 +123,7 @@ export default function Home() {
       </p>
     </div>
   ) : movies && movies?.length > 0 ? (
-    <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
+    <div className="min-h-screen lg:max-w-[1440px] flex items-start justify-center px-[12px] min-[424px]:px-[24px] sm:px-8 md:px-12 lg:px-16 xl:px-24 py-8 md:py-12">
       <div className="grid grid-cols-12 gap-4 w-full">
         {/* Header */}
         <div className="col-span-12 flex items-center justify-between mb-[80px]">
@@ -160,7 +160,7 @@ export default function Home() {
         </div>
 
         {/* Movie List */}
-        <div className="flex col-span-12 justify-center items-center flex-wrap gap-4 w-full">
+        <div className="flex col-span-12 justify-center items-center flex-wrap gap-2 min-[424px]:gap-4 w-full">
           {movies?.map((movie) => (
             <Link
               key={movie._id}
