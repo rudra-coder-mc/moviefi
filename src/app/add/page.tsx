@@ -80,8 +80,6 @@ export default function AddMovie() {
       <div className="w-full flex items-start justify-between gap-[127px]">
         <div className="sm:block hidden ">
           <SingleImageDropzone
-            width={473}
-            height={504}
             className="w-[473px] h-[504px]"
             value={file}
             onChange={(file) => {
@@ -116,10 +114,6 @@ export default function AddMovie() {
           </div>
           <div className="sm:hidden block mb-[40px] sh:mb-0 w-full">
             <SingleImageDropzone
-              // width={380}
-              // height={372}
-              width={0}
-              height={0}
               className="w-full h-[372px] "
               value={file}
               onChange={(file) => {

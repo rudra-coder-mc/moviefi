@@ -19,8 +19,6 @@ const variants = {
 };
 
 type InputProps = {
-  width: number;
-  height: number;
   className?: string;
   value?: File | string;
   onChange?: (file?: File) => void | Promise<void>;
@@ -45,7 +43,7 @@ const ERROR_MESSAGES = {
 
 const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { dropzoneOptions, width, height, value, className, disabled, onChange },
+    { dropzoneOptions, value, className, disabled, onChange },
     ref
   ) => {
     const imageUrl = React.useMemo(() => {
