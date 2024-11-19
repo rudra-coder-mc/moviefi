@@ -61,18 +61,18 @@ jobs:
       - run:
           name: Debug Environment Variables in CircleCI
           command: |
-            echo MONGO_URL
+            echo $MONGO_URL
             echo "TOKEN_SECRET= TOKEN_SECRET"
             echo "EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY"
             echo "EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY"
       - run:
           name: Deploy Docker Image on EC2
           command: |
-            ssh -o StrictHostKeyChecking=no -o SendEnv=MONGO_URL -o SendEnv=TOKEN_SECRET -o SendEnv=EDGE_STORE_ACCESS_KEY -o SendEnv=EDGE_STORE_SECRET_KEY ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
-              "echo 'MONGO_URL=$MONGO_URL' && \
-              echo 'TOKEN_SECRET=$TOKEN_SECRET' && \
-              echo 'EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY' && \
-              echo 'EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY' && \
+            ssh -o StrictHostKeyChecking=no -o SendEnv=$MONGO_URL -o SendEnv=$TOKEN_SECRET -o SendEnv=$EDGE_STORE_ACCESS_KEY -o SendEnv=$EDGE_STORE_SECRET_KEY ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
+              echo MONGO_URL=$MONGO_URL && \
+              echo TOKEN_SECRET=$TOKEN_SECRET && \
+              echo EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY && \
+              echo EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY && \
               sudo docker load -i /home/ubuntu/moviefi-app.tar && \
               sudo docker stop moviefi-app || true && \
               sudo docker rm moviefi-app || true && \
@@ -83,7 +83,7 @@ jobs:
                 -e EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY \
                 -e EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY \
                 moviefi-app && \
-              echo 'Deployment complete!'"
+              echo 'Deployment complete!'
 
 workflows:
   version: 2
