@@ -31,6 +31,16 @@ MovieFi is a full-stack Next.js application designed for movie enthusiasts to ma
 
 - Continuous Integration and Deployment using CircleCI.
 
+## liver url
+
+- **AWS** : http://13.50.189.192/
+- **Vercel** : https://moviefi-wheat.vercel.app/login
+
+#### sample account :
+
+- email: temp1@gmail.com
+- password:  112233
+
 ## Getting Started
 
 ### Installation
@@ -212,8 +222,7 @@ jobs:
     docker:
       - image: circleci/node:latest
     working_directory: /home/circleci/deploy
-    environment:
-      $MONGO_URL
+    environment: $MONGO_URL
       $TOKEN_SECRET
       $EDGE_STORE_ACCESS_KEY
       $EDGE_STORE_SECRET_KEY
