@@ -13,11 +13,11 @@ jobs:
   build-docker:
     docker:
       - image: docker:20.10.7
-      environment:
-        MONGO_URL: $MONGO_URL
-        TOKEN_SECRET: $TOKEN_SECRET
-        EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
-        EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
+    environment:
+      MONGO_URL: $MONGO_URL
+      TOKEN_SECRET: $TOKEN_SECRET
+      EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
+      EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
     steps:
       - setup_remote_docker
       - checkout
