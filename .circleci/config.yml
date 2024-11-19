@@ -73,6 +73,10 @@ jobs:
               export TOKEN_SECRET=$TOKEN_SECRET && \
               export EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY && \
               export EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY && \
+              echo 'MONGO_URL=$MONGO_URL' && \
+              echo 'TOKEN_SECRET=$TOKEN_SECRET' && \
+              echo 'EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY' && \
+              echo 'EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY' && \
               sudo docker load -i /home/ubuntu/moviefi-app.tar && \
               sudo docker stop moviefi-app || true && \
               sudo docker rm moviefi-app || true && \
