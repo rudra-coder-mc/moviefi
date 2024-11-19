@@ -61,19 +61,15 @@ jobs:
       - run:
           name: Debug Environment Variables in CircleCI
           command: |
-            echo "MONGO_URL=$MONGO_URL"
-            echo "TOKEN_SECRET=$TOKEN_SECRET"
+            echo MONGO_URL
+            echo "TOKEN_SECRET= TOKEN_SECRET"
             echo "EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY"
             echo "EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY"
       - run:
           name: Deploy Docker Image on EC2
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
-              "export MONGO_URL=$MONGO_URL && \
-              export TOKEN_SECRET=$TOKEN_SECRET && \
-              export EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY && \
-              export EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY && \
-              echo 'MONGO_URL=$MONGO_URL' && \
+            ssh -o StrictHostKeyChecking=no -o SendEnv=MONGO_URL -o SendEnv=TOKEN_SECRET -o SendEnv=EDGE_STORE_ACCESS_KEY -o SendEnv=EDGE_STORE_SECRET_KEY ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
+              "echo 'MONGO_URL=$MONGO_URL' && \
               echo 'TOKEN_SECRET=$TOKEN_SECRET' && \
               echo 'EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY' && \
               echo 'EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY' && \
