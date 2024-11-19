@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  app:
+    image: nextjs-app
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URL: ${MONGO_URL}
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      EDGE_STORE_ACCESS_KEY: ${EDGE_STORE_ACCESS_KEY}
+      EDGE_STORE_SECRET_KEY: ${EDGE_STORE_SECRET_KEY}

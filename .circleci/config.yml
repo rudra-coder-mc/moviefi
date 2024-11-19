@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5
+  docker: circleci/docker@1.6.0
 
 executors:
   node-executor:
@@ -9,45 +10,74 @@ executors:
       - image: circleci/node:latest
 
 jobs:
-  build-node:
-    executor: node/default
-    environment:
-      $MONGO_URL
-      $TOKEN_SECRET
-      $EDGE_STORE_ACCESS_KEY
-      $EDGE_STORE_SECRET_KEY
-
+  build-docker:
+    docker:
+      - image: docker:20.10.7
+      environment:
+        MONGO_URL: $MONGO_URL
+        TOKEN_SECRET: $TOKEN_SECRET
+        EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
+        EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
     steps:
+      - setup_remote_docker
       - checkout
       - run:
-          name: Print Environment Variables
-          command: printenv
-      - node/install-packages:
-          pkg-manager: npm
+          name: Build Docker Image
+          command: |
+            docker build \
+              --build-arg MONGO_URL=$MONGO_URL \
+              --build-arg TOKEN_SECRET=$TOKEN_SECRET \
+              --build-arg EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY \
+              --build-arg EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY \
+              -t moviefi-app .
       - run:
-          name: Build Application
-          command: npm run build
-      # - run:
-      #     command: npm test
+          name: Save Docker Image as Tarball
+          command: docker save moviefi-app -o moviefi-app.tar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - moviefi-app.tar
 
-  deploy:
-    executor: node-executor
+  deploy-docker:
+    docker:
+      - image: circleci/node:latest
+      environment:
+        MONGO_URL: $MONGO_URL
+        TOKEN_SECRET: $TOKEN_SECRET
+        EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
+        EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
     steps:
-      - checkout
+      - attach_workspace:
+          at: /workspace
       - add_ssh_keys:
           fingerprints:
             - SHA256:azWrDG0C26Q09r8D01kxy7D78YDQ2k+Nv9bL7S4AGcA
       - run:
-          name: Deploy to EC2
+          name: Transfer Docker Image to EC2
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com "cd /home/ubuntu/moviefi && git pull origin main && export NODE_OPTIONS="--max-old-space-size=4096" && npm install && npm run build && pm2 restart all"
-      - run: echo "Deployment complete!"
+            scp -o StrictHostKeyChecking=no /workspace/moviefi-app.tar ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com:/home/ubuntu/moviefi-app.tar
+      - run:
+          name: Deploy Docker Image on EC2
+          command: |
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com << 'EOF'
+              docker load -i /home/ubuntu/moviefi-app.tar
+              docker stop moviefi-app || true
+              docker rm moviefi-app || true
+              docker run -d --name moviefi-app \
+                -p 80:3000 \
+                -e MONGO_URL=$MONGO_URL \
+                -e TOKEN_SECRET=$TOKEN_SECRET \
+                -e EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY \
+                -e EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY \
+                moviefi-app
+              echo "Deployment complete!"
+            EOF
 
 workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build-node
-      - deploy:
+      - build-docker
+      - deploy-docker:
           requires:
-            - build-node
+            - build-docker
