@@ -32,11 +32,11 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - SHA256:dYXfn3ckS9d+Xu1bigRggd39erp+aiddhQPKuMBXtoA
+            - SHA256:azWrDG0C26Q09r8D01kxy7D78YDQ2k+Nv9bL7S4AGcA
       - run:
           name: Deploy to EC2
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@ec2-52-204-181-195.compute-1.amazonaws.com "cd /home/ubuntu/moviefi && git pull origin main && npm install && npm run build && pm2 restart all"
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com "cd /home/ubuntu/moviefi && git pull origin main && npm install && npm run build && pm2 restart all"
       - run: echo "Deployment complete!"
 
 workflows:
