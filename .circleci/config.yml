@@ -44,8 +44,7 @@ jobs:
       - image: circleci/node:latest
 
     working_directory: /home/circleci/deploy
-    environment:
-      $MONGO_URL
+    environment: $MONGO_URL
       $TOKEN_SECRET
       $EDGE_STORE_ACCESS_KEY
       $EDGE_STORE_SECRET_KEY
@@ -62,7 +61,7 @@ jobs:
       - run:
           name: Deploy Docker Image on EC2
           command: |
-            ssh -o StrictHostKeyChecking=no -o SendEnv=$MONGO_URL -o  ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
+            ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
               "echo Deploying Docker image... && \
               sudo systemctl start docker && \
               sudo docker load -i /home/ubuntu/moviefi-app.tar && \
