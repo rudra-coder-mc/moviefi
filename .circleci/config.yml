@@ -12,10 +12,10 @@ jobs:
   build-node:
     executor: node/default
     environment:
-      MONGO_URL: $MONGO_URL
-      TOKEN_SECRET: $TOKEN_SECRET
-      EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
-      EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
+      $MONGO_URL
+      $TOKEN_SECRET
+      $EDGE_STORE_ACCESS_KEY
+      $EDGE_STORE_SECRET_KEY
 
     steps:
       - checkout
