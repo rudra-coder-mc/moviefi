@@ -59,6 +59,13 @@ jobs:
           command: |
             scp -o StrictHostKeyChecking=no /home/circleci/deploy/moviefi-app.tar ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com:/home/ubuntu/moviefi-app.tar
       - run:
+          name: Debug Environment Variables in CircleCI
+          command: |
+            echo "MONGO_URL=$MONGO_URL"
+            echo "TOKEN_SECRET=$TOKEN_SECRET"
+            echo "EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY"
+            echo "EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY"
+      - run:
           name: Deploy Docker Image on EC2
           command: |
             ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
