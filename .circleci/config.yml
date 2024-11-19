@@ -19,9 +19,13 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: Print Environment Variables
+          command: printenv
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Build Application
           command: npm run build
       # - run:
       #     command: npm test
