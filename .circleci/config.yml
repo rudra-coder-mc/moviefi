@@ -42,6 +42,7 @@ jobs:
   deploy-docker:
     docker:
       - image: circleci/node:latest
+
     working_directory: /home/circleci/deploy
     environment:
       MONGO_URL: $MONGO_URL
@@ -59,23 +60,13 @@ jobs:
           command: |
             scp -o StrictHostKeyChecking=no /home/circleci/deploy/moviefi-app.tar ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com:/home/ubuntu/moviefi-app.tar
       - run:
-          name: Debug Environment Variables in CircleCI
-          command: |
-            echo $MONGO_URL
-            echo "TOKEN_SECRET= TOKEN_SECRET"
-            echo "EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY"
-            echo "EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY"
-      - run:
           name: Deploy Docker Image on EC2
           command: |
-            ssh -o StrictHostKeyChecking=no -o SendEnv=$MONGO_URL -o SendEnv=$TOKEN_SECRET -o SendEnv=$EDGE_STORE_ACCESS_KEY -o SendEnv=$EDGE_STORE_SECRET_KEY ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
-              echo MONGO_URL=$MONGO_URL && \
-              echo TOKEN_SECRET=$TOKEN_SECRET && \
-              echo EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY && \
-              echo EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY && \
+            ssh -o StrictHostKeyChecking=no -o SendEnv=MONGO_URL -o SendEnv=TOKEN_SECRET -o SendEnv=EDGE_STORE_ACCESS_KEY -o SendEnv=EDGE_STORE_SECRET_KEY ubuntu@ec2-13-50-189-192.eu-north-1.compute.amazonaws.com \
+              "echo Deploying Docker image... && \
+              sudo systemctl start docker && \
               sudo docker load -i /home/ubuntu/moviefi-app.tar && \
-              sudo docker stop moviefi-app || true && \
-              sudo docker rm moviefi-app || true && \
+              sudo docker rm -f moviefi-app || true && \
               sudo docker run -d --name moviefi-app \
                 -p 80:3000 \
                 -e MONGO_URL=$MONGO_URL \
@@ -83,8 +74,8 @@ jobs:
                 -e EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY \
                 -e EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY \
                 moviefi-app && \
-              echo 'Deployment complete!'
-
+              echo 'Deployment complete!' || \
+              echo 'Deployment failed!'"
 workflows:
   version: 2
   build_and_deploy:
