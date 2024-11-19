@@ -41,11 +41,11 @@ jobs:
   deploy-docker:
     docker:
       - image: circleci/node:latest
-      environment:
-        MONGO_URL: $MONGO_URL
-        TOKEN_SECRET: $TOKEN_SECRET
-        EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
-        EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
+    environment:
+      MONGO_URL: $MONGO_URL
+      TOKEN_SECRET: $TOKEN_SECRET
+      EDGE_STORE_ACCESS_KEY: $EDGE_STORE_ACCESS_KEY
+      EDGE_STORE_SECRET_KEY: $EDGE_STORE_SECRET_KEY
     steps:
       - attach_workspace:
           at: /workspace
