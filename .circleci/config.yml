@@ -67,10 +67,10 @@ jobs:
               sudo docker rm moviefi-app || true && \
               sudo docker run -d --name moviefi-app \
                 -p 80:3000 \
-                -e MONGO_URL=$MONGO_URL \
-                -e TOKEN_SECRET=$TOKEN_SECRET \
-                -e EDGE_STORE_ACCESS_KEY=$EDGE_STORE_ACCESS_KEY \
-                -e EDGE_STORE_SECRET_KEY=$EDGE_STORE_SECRET_KEY \
+                -e MONGO_URL= $MONGO_URL \
+                -e TOKEN_SECRET= $TOKEN_SECRET \
+                -e EDGE_STORE_ACCESS_KEY= $EDGE_STORE_ACCESS_KEY \
+                -e EDGE_STORE_SECRET_KEY= $EDGE_STORE_SECRET_KEY \
                 moviefi-app && \
               echo 'Deployment complete!'"
 
